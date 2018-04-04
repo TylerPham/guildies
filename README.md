@@ -1,20 +1,16 @@
-Player API
+Guildies API
 ==========
 
-Background
-----------
+### Description
 
-In this exercise, you will create a simple REST API. We think that it can all be completed in an evening, but we appreciate that you may have other commitments and time constraints. Please let us know (roughly) when we should expect your answers (e.g. "over the weekend"), and whether or not you need more time.
+Guildies is an API for a fantasy RPG game focused on gathering the most unique items and becoming the most powerful guild with your friends. 
 
-You have been supplied with the skeleton of a Python web application. The stack is as follows:
 
-- Operating system: Debian 9 ("Stretch")
-- Python release: 3.6
-- Application framework: Flask
-- Database: PostgreSQL 9.6
-- Object-relational mapper: SQLAlchemy
-
-The purpose of the API is to manage the players, guilds and items of some game.
+### Tech Stack
+-Language: Python 3.6
+-Framework: Flask
+-Database: PostgreSQL
+-Objection-relation mapper: SQLAlchemy
 
 
 ### Players
@@ -32,49 +28,97 @@ Items are special bonuses which the player encounters as they progress through t
 However, a special rule applies if a player is in a guild when they pick up an item: if anyone else in the guild has the same item, the skill points of the players with that item are decreased by the same amount first.
 
 
-## Endpoints
+### Endpoints
 
-The API needs endpoints with the following functionality:
 
-1. create, update and delete a player
-2. create, update and delete a guild
-3. create, update and delete an item
-4. add a player to a guild
-5. remove a player from a guild
-6. add an item to a player
-7. calculate the total number of skill points in a guild
 
-The endpoints should accept JSON objects as the request body. For example, a `POST` to the endpoint to add a player to a guild might look like
+/players/ [POST]
+add a player to the database
+~~~
+    {
+    	"nickname": "player1",
+    	"email": "player1@email.com",
+    	"skillpoints": 10
+    }
+~~~
 
-```
-{
-    "player_id": <UUID>,
-    "guild_id": <UUID>
-}
-```
+/players/<Player_ID> [PUT]
+update a player in the database
+~~~
+    {
+    	"nickname": "player1",
+    	"email": "UPDATEDplayer1@email.com",
+    	"skillpoints": 15
+    }
+    values can be optionally omitted
+~~~
 
-Note that in some cases it may be appropriate for a single endpoint to handle multiple REST verbs (e.g. both a `POST` and a `PUT`).
+/players/<Player_ID> [DELETE]
+delete a player from the database
 
-Your endpoints should handle errors and return HTTP status codes appropriately. If a request is successfully processed (i.e. results in a 2XX status), the server should respond with the following message:
+/guilds/ [POST]
+add a guild to the database
+~~~
+    {
+    	"name": "guild1",
+    	"country_code": "105",
+    }
+    country_code can be optional
 
+~~~
+
+/guilds/<Guild_ID> [PUT]
+update a guild in the database
+~~~
+    {
+    	"name": "guild1",
+    	"country_code": "106"
+    }
+    values can be optionally omitted
+~~~
+
+/guilds/<Guild_ID> [DELETE]
+delete a guild from the database
+
+
+/items/ [POST]
+add an item to the database
+~~~
+    {
+    	"skillpoints": "10"
+    }
+~~~
+
+/items/<Item_ID> [PUT]
+update an item in the database
+~~~
+    {
+    	"skillpoints": "15"
+    }
+~~~
+
+/items/<Item_ID> [DELETE]
+
+/guilds/<int:guild_id>/players/<int:player_id> [PUT]
+add a player to an existing guild
+
+/guilds/<int:guild_id>/players/<int:player_id> [DELETE]
+delete a player from an existing guild
+
+/players/<int:player_id>/items/<int:item_id> [PUT]
+add an item to a player
+
+/guilds/<int:id>/skills [GET]
+return the total skillpoints of a guild
+
+
+All endpoints will return 
 ```
 {
     "success": "true"
 }
 ```
-
-If the request is not successful, the endpoint should return an appropriate HTTP status code and error message.
-
-## Tasks
-
-1. Create declarative SQLAlchemy model definitions which capture all of the information required for guilds, players and items, as well as the relationships between them.
-2. Use the model definitions to set up the database schema for the player, guild and item tables, with associated primary keys, indexes and foreign key relationships.
-3. Implement as many of the endpoints as you can.
-4. Write tests for your application using `pytest`.
-
-Write your code as if you were shipping it to production. It should be simple, idiomatic Python 3 which is easy to read. At Game Hive we don't allow code to be merged if it doesn't have tests covering it, so those are expected too.
-
-Use comments to explain your code, and the design decisions you made. 
+upon successful REST call
 
 Getting started
 ---------------
@@ -101,10 +145,6 @@ To get a shell inside the container, you would run
 ```
 $ docker-compose run -p 5000:5000 appserver bash
 ```
-
-### Libraries
-
-You can install any additional libraries, packages, etc. that you see fit. To install system packages, add the appropriate `apt-get` command to the `Dockerfile` and rebuild. To install Python packages, append them to the `requirements.txt` file and rebuild.
 
 
 You can rebuild by running 
@@ -151,6 +191,3 @@ You can get a shell on the database server by running `psql` inside the postgres
 $ docker exec -ti gamehive_postgres_1 psql gamehive gamehive
 psql (9.6.6)
 Type "help" for help.
-
-gamehive=#
-```
